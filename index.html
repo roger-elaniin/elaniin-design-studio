@@ -1,14 +1,616 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Elaniin Design Studio — Login</title>
-  <link rel="stylesheet" href="base.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Inter', sans-serif;
+      background: #FFFFFF;
+      color: #0C0C0C;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* =============================================
+       LAYOUT
+    ============================================= */
+    .auth-layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* =============================================
+       LEFT PANEL
+    ============================================= */
+    .auth-left {
+      width: 40%;
+      background-image: url('assets/elaniin-stock-04.png');
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: space-between;
+      padding: 48px 48px 40px;
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .auth-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 16, 0.55);
+      pointer-events: none;
+    }
+
+    /* Top: logo + text stack */
+    .auth-left-top {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .auth-logo {
+      max-width: 160px;
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* Bottom: version */
+    .auth-left-version {
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.4);
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Form logo (right panel, above heading) */
+    .auth-form-logo {
+      max-width: 182px;
+      width: 100%;
+      height: auto;
+      display: block;
+      margin-bottom: 32px;
+    }
+
+    /* =============================================
+       RIGHT PANEL
+    ============================================= */
+    .auth-right {
+      width: 60%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 64px;
+      background: #FFFFFF;
+    }
+
+    .auth-form-container {
+      width: 100%;
+      max-width: 400px;
+    }
+
+    /* =============================================
+       MODE TOGGLE — fade in on switch
+    ============================================= */
+    .auth-mode {
+      display: none;
+    }
+
+    .auth-mode.active {
+      display: block;
+      animation: modeIn 220ms ease forwards;
+    }
+
+    @keyframes modeIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* =============================================
+       FORM TYPOGRAPHY
+    ============================================= */
+    .form-heading {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      font-size: 24px;
+      color: #0C0C0C;
+      line-height: 1.2;
+      margin-bottom: 6px;
+    }
+
+    .form-subheading {
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+      font-size: 14px;
+      color: #4E4C4C;
+      margin-bottom: 28px;
+      line-height: 1.5;
+    }
+
+    /* =============================================
+       FORM FIELDS
+    ============================================= */
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      display: block;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      font-size: 13px;
+      color: #313131;
+      margin-bottom: 6px;
+    }
+
+    .form-input {
+      display: block;
+      width: 100%;
+      height: 44px;
+      padding: 0 14px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+      font-size: 14px;
+      color: #0C0C0C;
+      background: #FFFFFF;
+      border: 1.5px solid #D8D8D8;
+      border-radius: 8px;
+      outline: none;
+      transition: border-color 150ms ease, box-shadow 150ms ease;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .form-input::placeholder {
+      color: #CECECE;
+    }
+
+    .form-input:focus {
+      border-color: #023BFD;
+      box-shadow: 0 0 0 3px rgba(2, 59, 253, 0.12);
+    }
+
+    .form-input.is-error {
+      border-color: #9B2020;
+      box-shadow: 0 0 0 3px rgba(155, 32, 32, 0.10);
+    }
+
+    /* =============================================
+       PRIMARY BUTTON
+    ============================================= */
+    .btn-primary {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      height: 44px;
+      padding: 0 20px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      font-size: 14px;
+      color: #FFFFFF;
+      background: #023BFD;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 150ms ease, transform 100ms ease, opacity 150ms ease;
+      margin-top: 24px;
+      letter-spacing: 0.01em;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: #0034E3;
+    }
+
+    .btn-primary:active:not(:disabled) {
+      transform: scale(0.99);
+      background: #002CBD;
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+    }
+
+    /* =============================================
+       SPINNER
+    ============================================= */
+    .spinner {
+      width: 15px;
+      height: 15px;
+      border: 2px solid rgba(255, 255, 255, 0.35);
+      border-top-color: #FFFFFF;
+      border-radius: 50%;
+      animation: spin 0.65s linear infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* =============================================
+       INLINE ERROR
+    ============================================= */
+    .form-error {
+      display: none;
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+      font-size: 13px;
+      color: #9B2020;
+      margin-top: 10px;
+      line-height: 1.45;
+    }
+
+    .form-error.visible {
+      display: block;
+    }
+
+    /* =============================================
+       DIVIDER + SWITCH LINK
+    ============================================= */
+    .form-divider {
+      height: 1px;
+      background: #F0F0F0;
+      margin: 24px 0 20px;
+    }
+
+    .auth-switch {
+      text-align: center;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      color: #636363;
+    }
+
+    .auth-switch a {
+      color: #023BFD;
+      font-weight: 500;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .auth-switch a:hover {
+      text-decoration: underline;
+    }
+
+    /* =============================================
+       RESPONSIVE
+    ============================================= */
+    @media (max-width: 768px) {
+      .auth-layout {
+        flex-direction: column;
+      }
+
+      .auth-left {
+        width: 100%;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 24px;
+        min-height: auto;
+      }
+
+      .auth-left-version {
+        display: none;
+      }
+
+      .auth-right {
+        width: 100%;
+        padding: 32px 24px 48px;
+      }
+    }
+  </style>
 </head>
 <body>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/config.js"></script>
-  <script src="js/auth.js"></script>
+
+<div class="auth-layout">
+
+  <!-- ==========================================
+       LEFT PANEL
+  =========================================== -->
+  <div class="auth-left"></div>
+
+  <!-- ==========================================
+       RIGHT PANEL
+  =========================================== -->
+  <div class="auth-right">
+    <div class="auth-form-container">
+
+      <img
+        src="assets/elaniin-design-studio.svg"
+        alt="Elaniin"
+        class="auth-form-logo"
+      >
+
+      <!-- MODE A: LOGIN -->
+      <div class="auth-mode active" id="mode-login">
+
+        <h2 class="form-heading">Bienvenido de nuevo</h2>
+        <p class="form-subheading">Ingresa tus credenciales para continuar</p>
+
+        <form id="login-form" novalidate>
+
+          <div class="form-group">
+            <label class="form-label" for="login-email">Correo electrónico</label>
+            <input
+              class="form-input"
+              type="email"
+              id="login-email"
+              name="email"
+              placeholder="tu@elaniin.com"
+              autocomplete="email"
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="login-password">Contraseña</label>
+            <input
+              class="form-input"
+              type="password"
+              id="login-password"
+              name="password"
+              placeholder="••••••••"
+              autocomplete="current-password"
+              required
+            >
+          </div>
+
+          <button type="submit" class="btn-primary" id="login-btn">
+            Iniciar sesión
+          </button>
+
+          <div class="form-error" id="login-error" role="alert"></div>
+
+        </form>
+
+        <div class="form-divider"></div>
+
+        <div class="auth-switch">
+          ¿No tienes cuenta? <a onclick="switchMode('register')">Regístrate</a>
+        </div>
+
+      </div>
+
+      <!-- MODE B: REGISTER -->
+      <div class="auth-mode" id="mode-register">
+
+        <h2 class="form-heading">Crear cuenta</h2>
+        <p class="form-subheading">Completa los datos para unirte al equipo</p>
+
+        <form id="register-form" novalidate>
+
+          <div class="form-group">
+            <label class="form-label" for="reg-email">Correo electrónico</label>
+            <input
+              class="form-input"
+              type="email"
+              id="reg-email"
+              name="email"
+              placeholder="tu@elaniin.com"
+              autocomplete="email"
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="reg-password">Contraseña</label>
+            <input
+              class="form-input"
+              type="password"
+              id="reg-password"
+              name="password"
+              placeholder="••••••••"
+              autocomplete="new-password"
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="reg-confirm">Confirmar contraseña</label>
+            <input
+              class="form-input"
+              type="password"
+              id="reg-confirm"
+              name="confirm"
+              placeholder="••••••••"
+              autocomplete="new-password"
+              required
+            >
+          </div>
+
+          <button type="submit" class="btn-primary" id="register-btn">
+            Crear cuenta
+          </button>
+
+          <div class="form-error" id="register-error" role="alert"></div>
+
+        </form>
+
+        <div class="form-divider"></div>
+
+        <div class="auth-switch">
+          ¿Ya tienes cuenta? <a onclick="switchMode('login')">Inicia sesión</a>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/config.js"></script>
+<script src="js/auth.js"></script>
+<script>
+  // =================================================
+  // SESSION REDIRECT — check on page load
+  // =================================================
+  (async function checkExistingSession() {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', session.user.id)
+        .single();
+
+      if (profile?.role === 'admin') {
+        window.location.href = 'admin.html';
+      } else {
+        window.location.href = 'workspace.html';
+      }
+    } catch (_) {
+      // No valid session — stay on login page
+    }
+  })();
+
+  // =================================================
+  // MODE TOGGLE
+  // =================================================
+  function switchMode(mode) {
+    clearErrors();
+    const loginMode    = document.getElementById('mode-login');
+    const registerMode = document.getElementById('mode-register');
+
+    if (mode === 'register') {
+      loginMode.classList.remove('active');
+      registerMode.classList.add('active');
+    } else {
+      registerMode.classList.remove('active');
+      loginMode.classList.add('active');
+    }
+  }
+
+  // =================================================
+  // HELPERS
+  // =================================================
+  function setLoading(btn, loading, label) {
+    if (loading) {
+      btn.disabled = true;
+      btn.innerHTML = '<div class="spinner"></div> Cargando...';
+    } else {
+      btn.disabled = false;
+      btn.innerHTML = label;
+    }
+  }
+
+  function showError(errorEl, inputs, message) {
+    errorEl.textContent = message;
+    errorEl.classList.add('visible');
+    inputs.forEach(function(inp) {
+      if (inp) inp.classList.add('is-error');
+    });
+  }
+
+  function clearErrors() {
+    document.querySelectorAll('.form-error').forEach(function(el) {
+      el.textContent = '';
+      el.classList.remove('visible');
+    });
+    document.querySelectorAll('.form-input').forEach(function(el) {
+      el.classList.remove('is-error');
+    });
+  }
+
+  // =================================================
+  // LOGIN FORM
+  // =================================================
+  document.getElementById('login-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    clearErrors();
+
+    var emailEl    = document.getElementById('login-email');
+    var passwordEl = document.getElementById('login-password');
+    var btn        = document.getElementById('login-btn');
+    var errorEl    = document.getElementById('login-error');
+
+    // Required fields
+    if (!emailEl.value.trim() || !passwordEl.value) {
+      showError(errorEl,
+        [!emailEl.value.trim() ? emailEl : null, !passwordEl.value ? passwordEl : null].filter(Boolean),
+        'Por favor, completa todos los campos.'
+      );
+      return;
+    }
+
+    setLoading(btn, true, 'Iniciar sesión');
+
+    try {
+      await login(emailEl.value.trim(), passwordEl.value);
+    } catch (err) {
+      var msg = err.message || 'Error al iniciar sesión. Verifica tus credenciales.';
+      showError(errorEl, [emailEl, passwordEl], msg);
+      setLoading(btn, false, 'Iniciar sesión');
+    }
+  });
+
+  // =================================================
+  // REGISTER FORM
+  // =================================================
+  document.getElementById('register-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    clearErrors();
+
+    var emailEl    = document.getElementById('reg-email');
+    var passwordEl = document.getElementById('reg-password');
+    var confirmEl  = document.getElementById('reg-confirm');
+    var btn        = document.getElementById('register-btn');
+    var errorEl    = document.getElementById('register-error');
+
+    // Required fields
+    if (!emailEl.value.trim() || !passwordEl.value || !confirmEl.value) {
+      showError(errorEl, [emailEl, passwordEl, confirmEl], 'Por favor, completa todos los campos.');
+      return;
+    }
+
+    setLoading(btn, true, 'Crear cuenta');
+
+    try {
+      await register(emailEl.value.trim(), passwordEl.value, confirmEl.value);
+    } catch (err) {
+      var msg = err.message || 'Error al crear la cuenta. Intenta de nuevo.';
+      // Show confirm inputs in error if password mismatch
+      var errInputs = msg.includes('contraseña') ? [passwordEl, confirmEl] : [emailEl];
+      showError(errorEl, errInputs, msg);
+      setLoading(btn, false, 'Crear cuenta');
+    }
+  });
+
+  // Clear error state as user types
+  document.querySelectorAll('.form-input').forEach(function(input) {
+    input.addEventListener('input', function() {
+      this.classList.remove('is-error');
+    });
+  });
+</script>
 </body>
 </html>

@@ -1,14 +1,1272 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Elaniin Design Studio — Workspace</title>
-  <link rel="stylesheet" href="base.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.31.0/dist/tabler-icons.min.css">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Inter', sans-serif;
+      color: #0C0C0C;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* =============================================
+       SHELL
+    ============================================= */
+    .workspace-layout {
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* =============================================
+       SIDEBAR
+    ============================================= */
+    .sidebar {
+      width: 240px;
+      flex-shrink: 0;
+      background: #000040;
+      display: flex;
+      flex-direction: column;
+      transition: width 0.25s ease;
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px;
+      flex-shrink: 0;
+      width: 100%;
+    }
+
+    .sidebar-logo-full {
+      max-width: 140px;
+      height: auto;
+      display: block;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+
+    .sidebar-toggle {
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, 0.5);
+      cursor: pointer;
+      padding: 0;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: color 150ms;
+    }
+
+    .sidebar-toggle:hover {
+      color: #FFFFFF;
+    }
+
+    .sidebar-divider {
+      height: 1px;
+      background: rgba(255, 255, 255, 0.08);
+      margin: 14px 0 10px;
+      flex-shrink: 0;
+    }
+
+    /* New project button */
+    .btn-new-project {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      height: 40px;
+      margin: 0 12px 12px;
+      padding: 0 16px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      font-size: 14px;
+      color: #FFFFFF;
+      background: #023BFD;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 150ms ease;
+      flex-shrink: 0;
+    }
+
+    .btn-new-project:hover {
+      background: #0034E3;
+    }
+
+    .btn-new-project i {
+      font-size: 15px;
+    }
+
+    /* Search */
+    .sidebar-search-wrap {
+      position: relative;
+      margin: 0 16px 10px;
+      flex-shrink: 0;
+    }
+
+    .sidebar-search-icon {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 16px;
+      color: rgba(255, 255, 255, 0.4);
+      pointer-events: none;
+    }
+
+    .sidebar-search {
+      width: 100%;
+      height: 36px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 8px;
+      padding: 0 10px 0 32px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      color: #FFFFFF;
+      outline: none;
+      transition: border-color 150ms, background 150ms;
+    }
+
+    .sidebar-search::placeholder {
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    .sidebar-search:focus {
+      border-color: rgba(255, 255, 255, 0.35);
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    html.sidebar--collapsed .sidebar-search-wrap {
+      display: none;
+    }
+
+    /* Projects list */
+    .sidebar-projects {
+      flex: 1;
+      overflow-y: auto;
+      padding-bottom: 8px;
+    }
+
+    .sidebar-no-projects {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.3);
+      padding: 8px 16px;
+      text-align: center;
+      margin-top: 8px;
+    }
+
+    .project-group-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: rgba(255, 255, 255, 0.28);
+      padding: 14px 14px 4px;
+    }
+
+    .project-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 12px;
+      margin: 0 8px;
+      border-left: 3px solid transparent;
+      border-radius: 0 6px 6px 0;
+      cursor: pointer;
+      transition: background 150ms ease, color 150ms ease, border-color 150ms ease;
+    }
+
+    .project-item:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .project-item.active {
+      background: rgba(255, 255, 255, 0.08);
+      border-left-color: #023BFD;
+    }
+
+    .project-item.confirm-mode {
+      cursor: default;
+      gap: 6px;
+    }
+
+    .project-name {
+      flex: 1;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.6);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      transition: color 150ms;
+    }
+
+    .project-item:hover .project-name,
+    .project-item.active .project-name {
+      color: #FFFFFF;
+    }
+
+    .project-type-badge {
+      font-family: 'Inter', sans-serif;
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      padding: 2px 5px;
+      border-radius: 3px;
+      background: rgba(255, 255, 255, 0.08);
+      color: rgba(255, 255, 255, 0.45);
+      flex-shrink: 0;
+    }
+
+    .project-delete {
+      display: none;
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, 0.35);
+      cursor: pointer;
+      padding: 2px;
+      font-size: 14px;
+      line-height: 1;
+      flex-shrink: 0;
+      transition: color 150ms;
+    }
+
+    .project-delete:hover {
+      color: rgba(255, 100, 100, 0.8);
+    }
+
+    .project-item:hover .project-delete {
+      display: flex;
+      align-items: center;
+    }
+
+    /* Inline delete confirm */
+    .confirm-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 11.5px;
+      color: rgba(255, 255, 255, 0.7);
+      flex: 1;
+    }
+
+    .confirm-actions {
+      display: flex;
+      gap: 4px;
+    }
+
+    .proj-confirm-yes,
+    .proj-confirm-no {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 3px 8px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .proj-confirm-yes {
+      background: rgba(155, 32, 32, 0.20);
+      color: rgba(255, 130, 130, 0.9);
+    }
+
+    .proj-confirm-yes:hover {
+      background: rgba(155, 32, 32, 0.35);
+    }
+
+    .proj-confirm-no {
+      background: rgba(255, 255, 255, 0.08);
+      color: rgba(255, 255, 255, 0.55);
+    }
+
+    .proj-confirm-no:hover {
+      background: rgba(255, 255, 255, 0.14);
+    }
+
+    /* Sidebar footer */
+    .sidebar-footer {
+      padding: 12px 20px 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      flex-shrink: 0;
+    }
+
+    .sidebar-user-email {
+      display: block;
+      font-family: 'Inter', sans-serif;
+      font-size: 11.5px;
+      color: rgba(255, 255, 255, 0.4);
+      margin-bottom: 10px;
+      word-break: break-all;
+      line-height: 1.4;
+    }
+
+    .btn-logout {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 12px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.5);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.10);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 150ms, color 150ms;
+    }
+
+    .btn-logout:hover {
+      background: rgba(255, 255, 255, 0.10);
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    /* =============================================
+       MAIN CONTENT
+    ============================================= */
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: #F4F6FA;
+      min-width: 0;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* =============================================
+       STATE 1 — EMPTY
+    ============================================= */
+    .empty-state {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px;
+      gap: 12px;
+    }
+
+    .empty-logo {
+      width: 120px;
+      height: auto;
+      margin-bottom: 8px;
+    }
+
+    .empty-heading {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      font-size: 28px;
+      color: #0C0C0C;
+      text-align: center;
+    }
+
+    .empty-subtitle {
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+      font-size: 15px;
+      color: #4E4C4C;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .type-cards-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      max-width: 480px;
+      width: 100%;
+    }
+
+    .type-card {
+      background: #FFFFFF;
+      border: 1.5px solid #E5E7EB;
+      border-radius: 12px;
+      padding: 20px;
+      cursor: pointer;
+      transition: border-color 200ms ease, box-shadow 200ms ease, transform 100ms ease;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .type-card:hover {
+      border-color: #023BFD;
+      box-shadow: 0 2px 16px rgba(2, 59, 253, 0.12);
+      transform: translateY(-1px);
+    }
+
+    .type-card-icon {
+      font-size: 22px;
+      color: #023BFD;
+      line-height: 1;
+    }
+
+    .type-card-label {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      color: #0C0C0C;
+      line-height: 1.3;
+    }
+
+    /* =============================================
+       TYPE BADGES (shared)
+    ============================================= */
+    .type-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 99px;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+    }
+
+    .type-badge--websites { background: #EDF1FF; color: #023BFD; }
+    .type-badge--reports  { background: #D6F0E2; color: #1E7A4A; }
+    .type-badge--saas     { background: #FDF0D5; color: #9A6100; }
+    .type-badge--deck     { background: #F0F0F0; color: #636363; }
+
+    /* =============================================
+       STATE 3 — CHAT VIEW
+    ============================================= */
+    .chat-view {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Chat topbar */
+    .chat-topbar {
+      padding: 10px 20px;
+      background: #FFFFFF;
+      border-bottom: 1px solid #E8EAF0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .chat-project-name {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      font-size: 16px;
+      color: #0C0C0C;
+    }
+
+    .topbar-spacer {
+      flex: 1;
+    }
+
+    .btn-ghost {
+      height: 34px;
+      padding: 0 13px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: #313131;
+      background: #F0F2F8;
+      border: 1px solid #E0E4F0;
+      border-radius: 7px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: background 150ms ease;
+      white-space: nowrap;
+    }
+
+    .btn-ghost:hover {
+      background: #E4E8F6;
+    }
+
+    .btn-ghost.active {
+      background: #EDF1FF;
+      color: #023BFD;
+      border-color: #BFCEFE;
+    }
+
+    .btn-docs {
+      height: 34px;
+      padding: 0 13px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: #FFFFFF;
+      background: #000040;
+      border: none;
+      border-radius: 7px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: background 150ms ease;
+      white-space: nowrap;
+    }
+
+    .btn-docs:hover {
+      background: #000060;
+    }
+
+    /* Chat body */
+    .chat-body {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* Chat panel */
+    .chat-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: #F4F6FA;
+      min-width: 0;
+    }
+
+    /* Messages area */
+    .messages-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .messages-empty {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: #636363;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .messages-empty i {
+      font-size: 28px;
+      color: #CECECE;
+    }
+
+    /* Message bubbles */
+    .message {
+      display: flex;
+      flex-direction: column;
+      max-width: 78%;
+    }
+
+    .message--user {
+      align-self: flex-end;
+      align-items: flex-end;
+    }
+
+    .message--assistant {
+      align-self: flex-start;
+      align-items: flex-start;
+    }
+
+    .message-bubble {
+      padding: 10px 14px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13.5px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .message--user .message-bubble {
+      background: #023BFD;
+      color: #FFFFFF;
+      border-radius: 12px 12px 2px 12px;
+    }
+
+    .message--assistant .message-bubble {
+      background: #FFFFFF;
+      color: #0C0C0C;
+      border: 1px solid #E5E7EB;
+      border-radius: 12px 12px 12px 2px;
+    }
+
+    .message-html-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      color: #1E7A4A;
+      background: #D6F0E2;
+      padding: 3px 8px;
+      border-radius: 99px;
+      margin-top: 5px;
+    }
+
+    /* Chat input area */
+    .chat-input-area {
+      padding: 12px 16px 14px;
+      border-top: 1px solid #E8EAF0;
+      background: #FFFFFF;
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+      flex-shrink: 0;
+    }
+
+    .chat-input {
+      flex: 1;
+      min-height: 40px;
+      max-height: 120px;
+      padding: 10px 12px;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      color: #0C0C0C;
+      background: #FFFFFF;
+      border: 1.5px solid #D8D8D8;
+      border-radius: 8px;
+      outline: none;
+      resize: none;
+      overflow-y: auto;
+      line-height: 1.5;
+      transition: border-color 150ms ease, box-shadow 150ms ease;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .chat-input::placeholder {
+      color: #CECECE;
+    }
+
+    .chat-input:focus {
+      border-color: #023BFD;
+      box-shadow: 0 0 0 3px rgba(2, 59, 253, 0.10);
+    }
+
+    .send-btn {
+      width: 40px;
+      height: 40px;
+      background: #023BFD;
+      color: #FFFFFF;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+      transition: background 150ms ease;
+    }
+
+    .send-btn:hover:not(:disabled) {
+      background: #0034E3;
+    }
+
+    .send-btn:disabled {
+      opacity: 0.50;
+      cursor: not-allowed;
+    }
+
+    /* =============================================
+       PREVIEW PANEL
+    ============================================= */
+    .preview-panel {
+      width: 320px;
+      flex-shrink: 0;
+      border-left: 1px solid #E8EAF0;
+      background: #FAFAFA;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .preview-header {
+      padding: 10px 14px;
+      border-bottom: 1px solid #E8EAF0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #FFFFFF;
+      flex-shrink: 0;
+    }
+
+    .preview-title {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: #313131;
+    }
+
+    .preview-close-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      color: #636363;
+      display: flex;
+      align-items: center;
+      padding: 2px;
+      transition: color 150ms;
+    }
+
+    .preview-close-btn:hover {
+      color: #0C0C0C;
+    }
+
+    .preview-iframe-wrapper {
+      flex: 1;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .preview-empty {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: #636363;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+    }
+
+    .preview-empty i {
+      font-size: 28px;
+      color: #CECECE;
+    }
+
+    #preview-iframe {
+      width: 1280px;
+      height: 4000px;
+      border: none;
+      transform: scale(0.245);
+      transform-origin: top left;
+      display: none;
+      pointer-events: none;
+    }
+
+    /* =============================================
+       STATE 2 — MODAL
+    ============================================= */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.40);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+    }
+
+    .modal-card {
+      background: #FFFFFF;
+      border-radius: 16px;
+      padding: 32px;
+      max-width: 440px;
+      width: calc(100% - 48px);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.18);
+    }
+
+    .modal-heading {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      font-size: 20px;
+      color: #0C0C0C;
+      margin-bottom: 4px;
+    }
+
+    .modal-type-badge {
+      margin-bottom: 20px;
+    }
+
+    /* Step 1: type selector inside modal */
+    .modal-type-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+
+    .modal-type-card {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px;
+      background: #FAFAFA;
+      border: 1.5px solid #E5E7EB;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: border-color 150ms, background 150ms;
+    }
+
+    .modal-type-card:hover {
+      border-color: #023BFD;
+      background: #F0F4FF;
+    }
+
+    .modal-type-card i {
+      font-size: 18px;
+      color: #023BFD;
+      flex-shrink: 0;
+    }
+
+    .modal-type-card-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: #0C0C0C;
+      line-height: 1.3;
+    }
+
+    /* Step 2: name input */
+    .modal-field-label {
+      display: block;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      font-size: 13px;
+      color: #313131;
+      margin-bottom: 6px;
+    }
+
+    .modal-input {
+      display: block;
+      width: 100%;
+      height: 42px;
+      padding: 0 12px;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      color: #0C0C0C;
+      border: 1.5px solid #D8D8D8;
+      border-radius: 8px;
+      outline: none;
+      transition: border-color 150ms ease, box-shadow 150ms ease;
+      -webkit-appearance: none;
+    }
+
+    .modal-input::placeholder {
+      color: #CECECE;
+    }
+
+    .modal-input:focus {
+      border-color: #023BFD;
+      box-shadow: 0 0 0 3px rgba(2, 59, 253, 0.10);
+    }
+
+    .modal-error {
+      font-family: 'Inter', sans-serif;
+      font-size: 12.5px;
+      color: #9B2020;
+      margin-top: 6px;
+      min-height: 16px;
+    }
+
+    .modal-footer {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-top: 20px;
+    }
+
+    .btn-modal-cancel {
+      height: 38px;
+      padding: 0 16px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: #4E4C4C;
+      background: #F0F2F8;
+      border: 1px solid #E0E4F0;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 150ms;
+    }
+
+    .btn-modal-cancel:hover {
+      background: #E4E8F6;
+    }
+
+    .btn-modal-primary {
+      height: 38px;
+      padding: 0 16px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: #FFFFFF;
+      background: #023BFD;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 150ms;
+    }
+
+    .btn-modal-primary:hover:not(:disabled) {
+      background: #0034E3;
+    }
+
+    .btn-modal-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    /* =============================================
+       TOAST
+    ============================================= */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #0C0C0C;
+      color: #FFFFFF;
+      font-family: 'Inter', sans-serif;
+      font-size: 13.5px;
+      font-weight: 500;
+      padding: 12px 18px;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.22);
+      transform: translateY(12px);
+      opacity: 0;
+      transition: transform 280ms ease, opacity 280ms ease;
+      pointer-events: none;
+      z-index: 9999;
+      max-width: 320px;
+    }
+
+    .toast--visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .toast--error {
+      background: #9B2020;
+    }
+
+    /* =============================================
+       SIDEBAR — COLLAPSED STATE
+    ============================================= */
+    html.sidebar--collapsed .sidebar {
+      width: 64px;
+    }
+
+    html.sidebar--collapsed .sidebar-header {
+      justify-content: center;
+      padding: 16px 0;
+    }
+
+    html.sidebar--collapsed .sidebar-logo-full {
+      display: none;
+    }
+
+    html.sidebar--collapsed .project-group-label {
+      display: none;
+    }
+
+    html.sidebar--collapsed .sidebar-no-projects {
+      display: none;
+    }
+
+    html.sidebar--collapsed .project-item {
+      justify-content: center;
+      padding: 8px 0;
+      margin: 0 8px;
+      border-left: none !important;
+    }
+
+    html.sidebar--collapsed .project-name {
+      display: none;
+    }
+
+    html.sidebar--collapsed .project-delete {
+      display: none !important;
+    }
+
+    html.sidebar--collapsed .btn-new-project {
+      margin: 0 8px 12px;
+      padding: 0;
+    }
+
+    html.sidebar--collapsed .btn-new-project-text {
+      display: none;
+    }
+
+    html.sidebar--collapsed .sidebar-user-email {
+      display: none;
+    }
+
+    html.sidebar--collapsed .sidebar-footer {
+      padding: 12px 8px 20px;
+    }
+
+    html.sidebar--collapsed .btn-logout {
+      padding: 8px 0;
+    }
+
+    html.sidebar--collapsed .btn-logout-text {
+      display: none;
+    }
+  </style>
+  <script>if(localStorage.getItem('sidebar_collapsed')==='1')document.documentElement.classList.add('sidebar--collapsed');</script>
 </head>
 <body>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/config.js"></script>
-  <script src="js/workspace.js"></script>
+
+<div class="workspace-layout">
+
+  <!-- ==========================================
+       SIDEBAR
+  =========================================== -->
+  <aside class="sidebar">
+
+    <div class="sidebar-header">
+      <img id="logo-full" class="sidebar-logo-full" src="assets/elaniin-primary-version-white.svg" alt="Elaniin Design Studio" onclick="showEmptyState()">
+      <button class="sidebar-toggle" onclick="toggleSidebar()" title="Colapsar menú">
+        <i class="ti ti-chevron-left" id="sidebar-toggle-icon"></i>
+      </button>
+    </div>
+
+    <div class="sidebar-divider"></div>
+
+    <button class="btn-new-project" onclick="showEmptyState()">
+      <i class="ti ti-plus"></i>
+      <span class="btn-new-project-text">Nuevo proyecto</span>
+    </button>
+
+    <div class="sidebar-search-wrap">
+      <i class="ti ti-search sidebar-search-icon"></i>
+      <input class="sidebar-search" type="text" placeholder="Buscar proyecto..." oninput="filterProjects(this.value)">
+    </div>
+
+    <div class="sidebar-projects" id="projects-list">
+      <div class="sidebar-no-projects">Cargando...</div>
+    </div>
+
+    <div class="sidebar-footer">
+      <span class="sidebar-user-email" id="user-email">—</span>
+      <button class="btn-logout" onclick="logout()">
+        <i class="ti ti-logout" style="font-size:14px;"></i>
+        <span class="btn-logout-text">Cerrar sesión</span>
+      </button>
+    </div>
+
+  </aside>
+
+  <!-- ==========================================
+       MAIN CONTENT
+  =========================================== -->
+  <main class="main-content">
+
+    <!-- ======================================
+         STATE 1 — EMPTY
+    ======================================= -->
+    <div class="empty-state" id="empty-state">
+
+      <h2 class="empty-heading" id="empty-heading">Hola 👋</h2>
+      <p class="empty-subtitle">¿Qué vamos a crear hoy?</p>
+
+      <div class="type-cards-grid">
+
+        <div class="type-card" onclick="openModal('websites')">
+          <i class="ti ti-world type-card-icon"></i>
+          <span class="type-card-label">Websites &amp; Landings</span>
+        </div>
+
+        <div class="type-card" onclick="openModal('reports')">
+          <i class="ti ti-chart-bar type-card-icon"></i>
+          <span class="type-card-label">Dashboards &amp; Reports</span>
+        </div>
+
+        <div class="type-card" onclick="openModal('saas')">
+          <i class="ti ti-layout-dashboard type-card-icon"></i>
+          <span class="type-card-label">Tools / SaaS / Web Apps</span>
+        </div>
+
+        <div class="type-card" onclick="openModal('deck')">
+          <i class="ti ti-presentation type-card-icon"></i>
+          <span class="type-card-label">Deck System</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ======================================
+         STATE 3 — CHAT VIEW
+    ======================================= -->
+    <div class="chat-view hidden" id="chat-view">
+
+      <!-- Chat topbar -->
+      <div class="chat-topbar">
+        <span class="chat-project-name" id="chat-project-name">Proyecto</span>
+        <span class="type-badge type-badge--websites" id="chat-type-badge">WEB</span>
+        <div class="topbar-spacer"></div>
+        <button class="btn-ghost" id="preview-btn" onclick="togglePreview()">
+          <i class="ti ti-eye" style="font-size:14px;"></i>
+          Preview
+        </button>
+        <button class="btn-docs" onclick="downloadHtml()">
+          <i class="ti ti-download" style="font-size:14px;"></i>
+          Elaniin Docs
+        </button>
+      </div>
+
+      <!-- Chat + Preview body -->
+      <div class="chat-body">
+
+        <!-- Chat panel -->
+        <div class="chat-panel">
+
+          <div class="messages-area" id="messages-area">
+            <div class="messages-empty" id="messages-empty" style="display:none;">
+              <i class="ti ti-sparkles"></i>
+              <p>Describe lo que necesitas.<br>Claude iniciará con un mapa conceptual.</p>
+            </div>
+          </div>
+
+          <div class="chat-input-area">
+            <textarea
+              class="chat-input"
+              id="chat-input"
+              placeholder="Escribe tu mensaje… (Enter para enviar, Shift+Enter para nueva línea)"
+              rows="1"
+            ></textarea>
+            <button class="send-btn" id="send-btn" onclick="sendMessage()" title="Enviar">
+              <i class="ti ti-send"></i>
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Preview panel (hidden by default) -->
+        <div class="preview-panel hidden" id="preview-panel">
+
+          <div class="preview-header">
+            <span class="preview-title">Preview</span>
+            <button class="preview-close-btn" onclick="togglePreview()" title="Cerrar preview">
+              <i class="ti ti-x"></i>
+            </button>
+          </div>
+
+          <div class="preview-iframe-wrapper">
+            <div class="preview-empty" id="preview-empty">
+              <i class="ti ti-file-code"></i>
+              <span>El HTML generado aparecerá aquí</span>
+            </div>
+            <iframe id="preview-iframe" sandbox="allow-scripts allow-same-origin"></iframe>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ==========================================
+     STATE 2 — NEW PROJECT MODAL
+=========================================== -->
+<div class="modal-overlay hidden" id="modal-overlay" onclick="if(event.target===this) hideModal()">
+  <div class="modal-card">
+
+    <h2 class="modal-heading">Nuevo proyecto</h2>
+
+    <!-- STEP 1: type selector (shown when no type pre-selected) -->
+    <div id="modal-step-1">
+      <p style="font-family:'Inter',sans-serif;font-size:14px;color:#4E4C4C;margin:8px 0 16px;">
+        Selecciona el tipo de entregable:
+      </p>
+      <div class="modal-type-grid">
+        <div class="modal-type-card" onclick="selectModalType('websites')">
+          <i class="ti ti-world"></i>
+          <span class="modal-type-card-label">Websites &amp; Landings</span>
+        </div>
+        <div class="modal-type-card" onclick="selectModalType('reports')">
+          <i class="ti ti-chart-bar"></i>
+          <span class="modal-type-card-label">Dashboards &amp; Reports</span>
+        </div>
+        <div class="modal-type-card" onclick="selectModalType('saas')">
+          <i class="ti ti-layout-dashboard"></i>
+          <span class="modal-type-card-label">Tools / SaaS / Web Apps</span>
+        </div>
+        <div class="modal-type-card" onclick="selectModalType('deck')">
+          <i class="ti ti-presentation"></i>
+          <span class="modal-type-card-label">Deck System</span>
+        </div>
+      </div>
+      <div class="modal-footer" style="margin-top:16px;">
+        <button class="btn-modal-cancel" onclick="hideModal()">Cancelar</button>
+      </div>
+    </div>
+
+    <!-- STEP 2: name input (shown when type is pre-selected) -->
+    <div id="modal-step-2" class="hidden">
+      <span id="modal-type-badge" class="type-badge type-badge--websites" style="margin:8px 0 20px;display:inline-block;">
+        Websites &amp; Landings
+      </span>
+
+      <label class="modal-field-label" for="modal-project-name">Nombre del proyecto</label>
+      <input
+        class="modal-input"
+        type="text"
+        id="modal-project-name"
+        placeholder="Ej. Reporte Q2 - Cliente X"
+        autocomplete="off"
+        onkeydown="if(event.key==='Enter') handleCreateProject()"
+      >
+      <div class="modal-error" id="modal-error"></div>
+
+      <div class="modal-footer">
+        <button class="btn-modal-cancel" onclick="hideModal()">Cancelar</button>
+        <button class="btn-modal-primary" id="modal-create-btn" onclick="handleCreateProject()">
+          Crear proyecto
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/config.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/workspace.js"></script>
 </body>
 </html>

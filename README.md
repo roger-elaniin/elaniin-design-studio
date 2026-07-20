@@ -31,6 +31,22 @@ elaniin-design-studio/
   README.md           # This file
 ```
 
+## First Admin Account
+
+To create the first admin account:
+1. Register normally via `index.html`
+2. Go to [Supabase Dashboard](https://app.supabase.com) → **Table Editor** → `profiles`
+3. Find your user row → change `role` from `user` to `admin` manually
+4. Log in again — you'll be redirected to `admin.html`
+
+**Note on user listing (Tab 4 — Usuarios):** The default RLS policy only allows users to see their own profile row. To enable the admin to list all users, run this in the Supabase SQL Editor:
+```sql
+create policy "profiles_admin_read_all" on profiles for select
+using (
+  exists (select 1 from profiles p where p.id = auth.uid() and p.role = 'admin')
+);
+```
+
 ## First-Time Setup
 
 > **IMPORTANT**: Before deploying or running the app, you must manually execute the SQL schema in Supabase.

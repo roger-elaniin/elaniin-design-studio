@@ -1,14 +1,1073 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Elaniin Design Studio — Admin</title>
-  <link rel="stylesheet" href="base.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.31.0/dist/tabler-icons.min.css">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Inter', sans-serif;
+      color: #0C0C0C;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      background: #F4F6FA;
+    }
+
+    /* =============================================
+       SHELL LAYOUT
+    ============================================= */
+    .admin-layout {
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* =============================================
+       SIDEBAR
+    ============================================= */
+    .sidebar {
+      width: 240px;
+      flex-shrink: 0;
+      background: #000040;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: width 0.25s ease;
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px;
+      flex-shrink: 0;
+    }
+
+    .sidebar-header img {
+      max-width: 140px;
+      height: auto;
+      display: block;
+    }
+
+    .sidebar-toggle {
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, 0.5);
+      cursor: pointer;
+      padding: 0;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: color 150ms;
+    }
+
+    .sidebar-toggle:hover {
+      color: #FFFFFF;
+    }
+
+    /* =============================================
+       SIDEBAR — COLLAPSED STATE
+    ============================================= */
+    html.admin-sidebar--collapsed .sidebar {
+      width: 64px;
+    }
+
+    html.admin-sidebar--collapsed .sidebar-header {
+      justify-content: center;
+    }
+
+    html.admin-sidebar--collapsed .sidebar-header img {
+      display: none;
+    }
+
+    html.admin-sidebar--collapsed .nav-label {
+      display: none;
+    }
+
+    html.admin-sidebar--collapsed .nav-item {
+      justify-content: center;
+      border-left-color: transparent !important;
+    }
+
+    html.admin-sidebar--collapsed .nav-item.active {
+      border-left-color: transparent !important;
+    }
+
+    html.admin-sidebar--collapsed .sidebar-user-email {
+      display: none;
+    }
+
+    html.admin-sidebar--collapsed .sidebar-footer {
+      padding: 12px 8px 20px;
+    }
+
+    html.admin-sidebar--collapsed .btn-logout {
+      padding: 8px 0;
+    }
+
+    html.admin-sidebar--collapsed .btn-logout-text {
+      display: none;
+    }
+
+    .sidebar-divider {
+      height: 1px;
+      background: rgba(255, 255, 255, 0.08);
+      margin: 16px 0 8px;
+      flex-shrink: 0;
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 0 8px;
+      gap: 1px;
+      overflow-y: auto;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.55);
+      background: transparent;
+      border: none;
+      border-left: 3px solid transparent;
+      border-radius: 0 6px 6px 0;
+      cursor: pointer;
+      transition: background 150ms ease, color 150ms ease, border-color 150ms ease;
+      text-align: left;
+      width: 100%;
+      white-space: nowrap;
+    }
+
+    .nav-item i {
+      font-size: 16px;
+      flex-shrink: 0;
+      opacity: 0.75;
+    }
+
+    .nav-item:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    .nav-item.active {
+      background: rgba(255, 255, 255, 0.08);
+      color: #FFFFFF;
+      border-left-color: #023BFD;
+    }
+
+    .nav-item.active i {
+      opacity: 1;
+    }
+
+    .sidebar-footer {
+      padding: 14px 20px 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      flex-shrink: 0;
+    }
+
+    .sidebar-user-email {
+      display: block;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.45);
+      margin-bottom: 10px;
+      word-break: break-all;
+      line-height: 1.4;
+    }
+
+    .btn-logout {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 12px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.55);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.10);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 150ms ease, color 150ms ease;
+    }
+
+    .btn-logout:hover {
+      background: rgba(255, 255, 255, 0.10);
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    /* =============================================
+       MAIN CONTENT
+    ============================================= */
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: #F4F6FA;
+      min-width: 0;
+    }
+
+    .topbar {
+      padding: 18px 32px 16px;
+      background: #FFFFFF;
+      border-bottom: 1px solid #E8EAF0;
+      flex-shrink: 0;
+    }
+
+    .topbar-title {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      font-size: 20px;
+      color: #0C0C0C;
+      line-height: 1.2;
+    }
+
+    .topbar-subtitle {
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+      font-size: 14px;
+      color: #4E4C4C;
+      margin-top: 3px;
+    }
+
+    .content-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 28px 32px 40px;
+    }
+
+    /* =============================================
+       TAB PANELS
+    ============================================= */
+    .tab-panel.hidden {
+      display: none;
+    }
+
+    /* =============================================
+       CARDS
+    ============================================= */
+    .card {
+      background: #FFFFFF;
+      border-radius: 12px;
+      border: 1px solid #E8EAF0;
+      overflow: hidden;
+    }
+
+    .card + .card,
+    .card + .two-col-grid {
+      margin-top: 20px;
+    }
+
+    .card-header {
+      padding: 16px 20px 14px;
+      border-bottom: 1px solid #F0F2F8;
+    }
+
+    .card-title {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      color: #0C0C0C;
+    }
+
+    .card-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      color: #636363;
+      margin-top: 3px;
+      line-height: 1.5;
+    }
+
+    .card-body {
+      padding: 20px;
+    }
+
+    /* =============================================
+       SEGMENTED TABS (Prompts sub-tabs)
+    ============================================= */
+    .seg-tabs {
+      display: flex;
+      background: #F0F2F8;
+      border-radius: 8px;
+      padding: 3px;
+      gap: 2px;
+      margin-bottom: 18px;
+      overflow-x: auto;
+    }
+
+    .seg-tab-btn {
+      flex: 1;
+      min-width: max-content;
+      padding: 7px 14px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: #636363;
+      background: transparent;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 150ms, color 150ms, box-shadow 150ms;
+      white-space: nowrap;
+    }
+
+    .seg-tab-btn:hover:not(.active) {
+      color: #313131;
+    }
+
+    .seg-tab-btn.active {
+      background: #FFFFFF;
+      color: #023BFD;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.10);
+    }
+
+    /* =============================================
+       PROMPT PANELS
+    ============================================= */
+    .prompt-panel.hidden {
+      display: none;
+    }
+
+    /* =============================================
+       FORM ELEMENTS
+    ============================================= */
+    .form-label {
+      display: block;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      font-size: 13px;
+      color: #313131;
+      margin-bottom: 6px;
+    }
+
+    .form-input {
+      display: block;
+      width: 100%;
+      height: 40px;
+      padding: 0 12px;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      color: #0C0C0C;
+      background: #FFFFFF;
+      border: 1.5px solid #D8D8D8;
+      border-radius: 8px;
+      outline: none;
+      transition: border-color 150ms ease, box-shadow 150ms ease;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .form-input::placeholder {
+      color: #CECECE;
+    }
+
+    .form-input:focus {
+      border-color: #023BFD;
+      box-shadow: 0 0 0 3px rgba(2, 59, 253, 0.10);
+    }
+
+    .form-select {
+      display: block;
+      height: 40px;
+      padding: 0 32px 0 12px;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      color: #0C0C0C;
+      background: #FFFFFF url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23636363' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat right 10px center;
+      border: 1.5px solid #D8D8D8;
+      border-radius: 8px;
+      outline: none;
+      cursor: pointer;
+      -webkit-appearance: none;
+      appearance: none;
+      transition: border-color 150ms;
+    }
+
+    .form-select:focus {
+      border-color: #023BFD;
+      box-shadow: 0 0 0 3px rgba(2, 59, 253, 0.10);
+    }
+
+    .form-textarea {
+      display: block;
+      width: 100%;
+      min-height: 320px;
+      padding: 12px 14px;
+      font-family: 'Courier New', 'Consolas', monospace;
+      font-size: 13px;
+      line-height: 1.65;
+      color: #0C0C0C;
+      background: #FAFAFA;
+      border: 1.5px solid #D8D8D8;
+      border-radius: 8px;
+      outline: none;
+      resize: vertical;
+      transition: border-color 150ms ease, box-shadow 150ms ease, background 150ms ease;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .form-textarea:focus {
+      border-color: #023BFD;
+      box-shadow: 0 0 0 3px rgba(2, 59, 253, 0.10);
+      background: #FFFFFF;
+    }
+
+    .form-textarea:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* =============================================
+       BUTTONS
+    ============================================= */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      height: 38px;
+      padding: 0 16px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+      font-size: 13.5px;
+      color: #FFFFFF;
+      background: #023BFD;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 150ms ease;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: #0034E3;
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.60;
+      cursor: not-allowed;
+    }
+
+    .btn-danger-sm {
+      padding: 4px 10px;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: #9B2020;
+      background: #FADADD;
+      border: 1px solid #F0AAAA;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 150ms;
+      white-space: nowrap;
+    }
+
+    .btn-danger-sm:hover {
+      background: #F0AAAA;
+    }
+
+    .btn-ghost-sm {
+      padding: 4px 10px;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: #636363;
+      background: #F0F0F0;
+      border: 1px solid #D8D8D8;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 150ms;
+      white-space: nowrap;
+    }
+
+    .btn-ghost-sm:hover {
+      background: #E0E0E0;
+    }
+
+    /* =============================================
+       STATUS BADGE
+    ============================================= */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 99px;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .status-badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+      flex-shrink: 0;
+    }
+
+    .status-badge--success {
+      background: #D6F0E2;
+      color: #1E7A4A;
+    }
+
+    .status-badge--neutral {
+      background: #F0F0F0;
+      color: #636363;
+    }
+
+    /* =============================================
+       ROLE BADGE
+    ============================================= */
+    .role-badge {
+      display: inline-block;
+      padding: 3px 9px;
+      border-radius: 99px;
+      font-family: 'Inter', sans-serif;
+      font-size: 11.5px;
+      font-weight: 500;
+    }
+
+    .role-badge--admin {
+      background: #000040;
+      color: #FFFFFF;
+    }
+
+    .role-badge--user {
+      background: #F0F0F0;
+      color: #636363;
+    }
+
+    /* =============================================
+       DATA TABLE
+    ============================================= */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .data-table th {
+      padding: 10px 16px;
+      text-align: left;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #636363;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background: #FAFBFD;
+      border-bottom: 1px solid #E8EAF0;
+    }
+
+    .data-table td {
+      padding: 12px 16px;
+      font-size: 13.5px;
+      color: #0C0C0C;
+      border-bottom: 1px solid #F0F2F8;
+      vertical-align: middle;
+    }
+
+    .data-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .data-table tbody tr:hover td {
+      background: #F9FAFD;
+    }
+
+    .td-email {
+      color: #313131;
+    }
+
+    .td-date {
+      color: #636363;
+      font-size: 13px;
+    }
+
+    .action-cell {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .confirm-text {
+      font-size: 12px;
+      color: #9B2020;
+      font-weight: 500;
+    }
+
+    .table-loading,
+    .table-error,
+    .table-empty {
+      text-align: center;
+      padding: 40px 16px;
+      color: #636363;
+      font-size: 14px;
+    }
+
+    .table-error {
+      color: #9B2020;
+    }
+
+    /* =============================================
+       CREATE USER FORM
+    ============================================= */
+    .create-user-form {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .create-user-field {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .create-user-field--email {
+      flex: 2;
+      min-width: 180px;
+    }
+
+    .create-user-field--pass {
+      flex: 1.5;
+      min-width: 140px;
+    }
+
+    .create-user-field--role {
+      min-width: 120px;
+    }
+
+    .create-msg {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      margin-top: 10px;
+      min-height: 18px;
+    }
+
+    .create-msg--error   { color: #9B2020; }
+    .create-msg--success { color: #1E7A4A; }
+
+    /* =============================================
+       TWO-COLUMN GRID (Archivos)
+    ============================================= */
+    .two-col-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .char-count {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      color: #4E4C4C;
+      margin-top: 6px;
+    }
+
+    /* =============================================
+       MCP SECTION
+    ============================================= */
+    .mcp-section {
+      max-width: 560px;
+    }
+
+    .mcp-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      color: #4E4C4C;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .mcp-input-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .mcp-input-row .form-input {
+      flex: 1;
+    }
+
+    /* =============================================
+       SPACING UTILITIES
+    ============================================= */
+    .mt-12 { margin-top: 12px; }
+    .mt-16 { margin-top: 16px; }
+    .mt-20 { margin-top: 20px; }
+    .mb-20 { margin-bottom: 20px; }
+
+    /* =============================================
+       TOAST
+    ============================================= */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #0C0C0C;
+      color: #FFFFFF;
+      font-family: 'Inter', sans-serif;
+      font-size: 13.5px;
+      font-weight: 500;
+      padding: 12px 18px;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.22);
+      transform: translateY(12px);
+      opacity: 0;
+      transition: transform 280ms ease, opacity 280ms ease;
+      pointer-events: none;
+      z-index: 9999;
+      max-width: 320px;
+    }
+
+    .toast--visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .toast--error {
+      background: #9B2020;
+    }
+  </style>
+  <script>if(localStorage.getItem('admin_sidebar_collapsed')==='1')document.documentElement.classList.add('admin-sidebar--collapsed');</script>
 </head>
 <body>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/config.js"></script>
-  <script src="js/admin.js"></script>
+
+<div class="admin-layout">
+
+  <!-- ==========================================
+       SIDEBAR
+  =========================================== -->
+  <aside class="sidebar">
+
+    <div class="sidebar-header">
+      <img src="assets/elaniin-primary-version-white.svg" alt="Elaniin Design Studio">
+      <button class="sidebar-toggle" onclick="toggleAdminSidebar()" title="Colapsar menú">
+        <i class="ti ti-chevron-left" id="admin-sidebar-toggle-icon"></i>
+      </button>
+    </div>
+
+    <div class="sidebar-divider"></div>
+
+    <nav class="sidebar-nav">
+      <button class="nav-item active" data-tab="prompts" onclick="loadTab('prompts')">
+        <i class="ti ti-message-2"></i>
+        <span class="nav-label">Prompts</span>
+      </button>
+      <button class="nav-item" data-tab="mcp" onclick="loadTab('mcp')">
+        <i class="ti ti-plug"></i>
+        <span class="nav-label">MCP</span>
+      </button>
+      <button class="nav-item" data-tab="archivos" onclick="loadTab('archivos')">
+        <i class="ti ti-file-code"></i>
+        <span class="nav-label">Archivos de referencia</span>
+      </button>
+      <button class="nav-item" data-tab="usuarios" onclick="loadTab('usuarios')">
+        <i class="ti ti-users"></i>
+        <span class="nav-label">Usuarios</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <span class="sidebar-user-email" id="user-email">—</span>
+      <button class="btn-logout" onclick="logout()">
+        <i class="ti ti-logout" style="font-size:14px;"></i>
+        <span class="btn-logout-text">Cerrar sesión</span>
+      </button>
+    </div>
+
+  </aside>
+
+  <!-- ==========================================
+       MAIN CONTENT
+  =========================================== -->
+  <main class="main-content">
+
+    <!-- TOP BAR -->
+    <div class="topbar">
+      <div class="topbar-title" id="page-title">Cargando...</div>
+      <div class="topbar-subtitle" id="page-subtitle"></div>
+    </div>
+
+    <!-- SCROLLABLE CONTENT -->
+    <div class="content-area">
+
+      <!-- ======================================
+           TAB 1 — PROMPTS
+      ======================================= -->
+      <div class="tab-panel" data-panel="prompts" id="tab-prompts">
+        <div class="card">
+          <div class="card-body">
+
+            <!-- Segmented control -->
+            <div class="seg-tabs">
+              <button class="seg-tab-btn prompt-tab-btn active" data-prompt="websites" onclick="switchPromptTab('websites')">
+                Websites &amp; Landings
+              </button>
+              <button class="seg-tab-btn prompt-tab-btn" data-prompt="reports" onclick="switchPromptTab('reports')">
+                Dashboards &amp; Reports
+              </button>
+              <button class="seg-tab-btn prompt-tab-btn" data-prompt="saas" onclick="switchPromptTab('saas')">
+                Tools / SaaS / Web Apps
+              </button>
+              <button class="seg-tab-btn prompt-tab-btn" data-prompt="deck" onclick="switchPromptTab('deck')">
+                Deck System
+              </button>
+            </div>
+
+            <!-- Websites & Landings -->
+            <div class="prompt-panel" data-prompt="websites">
+              <textarea
+                class="form-textarea"
+                id="textarea-websites"
+                placeholder="Pega aquí el PROMPT-brain para Websites & Landings..."
+              ></textarea>
+              <div class="mt-12">
+                <button class="btn-primary" id="save-prompt-websites" onclick="savePrompt('websites')">
+                  Guardar prompt
+                </button>
+              </div>
+            </div>
+
+            <!-- Dashboards & Reports -->
+            <div class="prompt-panel hidden" data-prompt="reports">
+              <textarea
+                class="form-textarea"
+                id="textarea-reports"
+                placeholder="Pega aquí el PROMPT-brain para Dashboards & Reports..."
+              ></textarea>
+              <div class="mt-12">
+                <button class="btn-primary" id="save-prompt-reports" onclick="savePrompt('reports')">
+                  Guardar prompt
+                </button>
+              </div>
+            </div>
+
+            <!-- Tools / SaaS / Web Apps -->
+            <div class="prompt-panel hidden" data-prompt="saas">
+              <textarea
+                class="form-textarea"
+                id="textarea-saas"
+                placeholder="Pega aquí el PROMPT-brain para Tools / SaaS / Web Apps..."
+              ></textarea>
+              <div class="mt-12">
+                <button class="btn-primary" id="save-prompt-saas" onclick="savePrompt('saas')">
+                  Guardar prompt
+                </button>
+              </div>
+            </div>
+
+            <!-- Deck System -->
+            <div class="prompt-panel hidden" data-prompt="deck">
+              <textarea
+                class="form-textarea"
+                id="textarea-deck"
+                placeholder="Pega aquí el PROMPT-brain para Deck System..."
+              ></textarea>
+              <div class="mt-12">
+                <button class="btn-primary" id="save-prompt-deck" onclick="savePrompt('deck')">
+                  Guardar prompt
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================================
+           TAB 2 — MCP
+      ======================================= -->
+      <div class="tab-panel hidden" data-panel="mcp" id="tab-mcp">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">URL del servidor EDS-MCP</div>
+          </div>
+          <div class="card-body">
+            <div class="mcp-section">
+              <p class="mcp-desc">
+                Ingresa la URL pública del servidor MCP. Se inyectará automáticamente en cada llamada a la API.
+              </p>
+              <div class="mcp-input-row">
+                <input
+                  class="form-input"
+                  type="url"
+                  id="mcp-url-input"
+                  placeholder="https://tu-servidor-mcp.com"
+                >
+                <button class="btn-primary" id="save-mcp-btn" onclick="saveMcp()">
+                  Guardar URL
+                </button>
+              </div>
+              <div id="mcp-status" class="status-badge status-badge--neutral">Sin configurar</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================================
+           TAB 3 — ARCHIVOS DE REFERENCIA
+      ======================================= -->
+      <div class="tab-panel hidden" data-panel="archivos" id="tab-archivos">
+        <div class="two-col-grid">
+
+          <!-- HTML Deck System -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">HTML Deck System</div>
+              <div class="card-desc">Pega el contenido completo de elaniin-deck-system.html</div>
+            </div>
+            <div class="card-body">
+              <textarea
+                class="form-textarea"
+                id="textarea-ref-deck"
+                style="min-height: 280px;"
+                oninput="updateCharCount('ref-deck', this.value.length)"
+                placeholder="&lt;!DOCTYPE html&gt;..."
+              ></textarea>
+              <div class="char-count" id="count-ref-deck">0 caracteres</div>
+              <div class="mt-12">
+                <button class="btn-primary" id="save-ref-deck-btn" onclick="saveArchivo('ref-deck', 'html_reference_deck')">
+                  Guardar
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- HTML Design System -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">HTML Design System</div>
+              <div class="card-desc">Pega el contenido completo de design-system.html o el módulo relevante</div>
+            </div>
+            <div class="card-body">
+              <textarea
+                class="form-textarea"
+                id="textarea-ref-ds"
+                style="min-height: 280px;"
+                oninput="updateCharCount('ref-ds', this.value.length)"
+                placeholder="&lt;!DOCTYPE html&gt;..."
+              ></textarea>
+              <div class="char-count" id="count-ref-ds">0 caracteres</div>
+              <div class="mt-12">
+                <button class="btn-primary" id="save-ref-ds-btn" onclick="saveArchivo('ref-ds', 'html_reference_design_system')">
+                  Guardar
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ======================================
+           TAB 4 — USUARIOS
+      ======================================= -->
+      <div class="tab-panel hidden" data-panel="usuarios" id="tab-usuarios">
+
+        <!-- Create user -->
+        <div class="card mb-20">
+          <div class="card-header">
+            <div class="card-title">Crear usuario</div>
+          </div>
+          <div class="card-body">
+            <div class="create-user-form">
+              <div class="create-user-field create-user-field--email">
+                <label class="form-label" for="new-user-email">Correo electrónico</label>
+                <input
+                  class="form-input"
+                  type="email"
+                  id="new-user-email"
+                  placeholder="usuario@elaniin.com"
+                  autocomplete="off"
+                >
+              </div>
+              <div class="create-user-field create-user-field--pass">
+                <label class="form-label" for="new-user-password">Contraseña</label>
+                <input
+                  class="form-input"
+                  type="password"
+                  id="new-user-password"
+                  placeholder="••••••••"
+                  autocomplete="new-password"
+                >
+              </div>
+              <div class="create-user-field create-user-field--role">
+                <label class="form-label" for="new-user-role">Rol</label>
+                <select class="form-select" id="new-user-role">
+                  <option value="user">Usuario</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </div>
+              <button class="btn-primary" id="create-user-btn" onclick="createUser()" style="margin-bottom:0;">
+                Crear usuario
+              </button>
+            </div>
+            <div class="create-msg" id="create-user-msg"></div>
+          </div>
+        </div>
+
+        <!-- Users table -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Usuarios registrados</div>
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Email</th>
+                <th>Rol</th>
+                <th>Fecha de creación</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="users-tbody">
+              <tr><td colspan="4" class="table-loading">Cargando...</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+    </div><!-- /.content-area -->
+  </main>
+
+</div><!-- /.admin-layout -->
+
+<!-- TOAST -->
+<div id="toast" class="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/config.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/admin.js"></script>
 </body>
 </html>
