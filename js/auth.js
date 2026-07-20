@@ -3,11 +3,18 @@
 // Phase 2: Supabase auth logic
 // ============================================================
 
+function validateElaniiEmail(email) {
+  if (!email.toLowerCase().endsWith('@elaniin.com')) {
+    throw new Error('Solo se permiten correos @elaniin.com');
+  }
+}
+
 /**
  * Login with email + password.
  * On success, redirects based on profile role.
  */
 async function login(email, password) {
+  validateElaniiEmail(email);
   const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
   if (error) throw error;
 
@@ -30,6 +37,7 @@ async function login(email, password) {
  * On success, redirects to workspace.html.
  */
 async function register(email, password, confirmPassword) {
+  validateElaniiEmail(email);
   if (password !== confirmPassword) {
     throw new Error('Las contraseñas no coinciden.');
   }
